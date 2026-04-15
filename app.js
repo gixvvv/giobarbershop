@@ -427,8 +427,8 @@ function getLocation() {
       status.textContent = `✅ Ubicación obtenida: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
 
       // Embed Google Maps with both user location and barber location
-      const barbLat = -33.60627;
-      const barbLng = -70.87649;
+      const barbLat = -33.6053;
+      const barbLng = -70.9008;
       mapDiv.innerHTML = `
         <iframe
           src="https://www.google.com/maps?q=${barbLat},${barbLng}&z=15&output=embed"
