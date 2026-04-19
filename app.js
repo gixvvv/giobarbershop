@@ -413,22 +413,18 @@ function getLocation() {
   const mapDiv = document.getElementById('map');
   status.className = 'location-status';
   status.textContent = '🔍 Obteniendo tu ubicación...';
-
   if (!navigator.geolocation) {
     status.className = 'location-status error';
     status.textContent = '❌ Tu navegador no soporta geolocalización.';
     return;
   }
-
   navigator.geolocation.getCurrentPosition(
     (pos) => {
       const { latitude, longitude } = pos.coords;
       status.className = 'location-status success';
       status.textContent = `✅ Ubicación obtenida: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
-
-      // Embed Google Maps with both user location and barber location
-      const barbLat = -33.6053;
-      const barbLng = -70.9008;
+      const barbLat = -33.6147;
+      const barbLng = -70.8997;
       mapDiv.innerHTML = `
         <iframe
           src="https://www.google.com/maps?q=${barbLat},${barbLng}&z=15&output=embed"
@@ -439,7 +435,7 @@ function getLocation() {
         <div style="margin-top:0.8rem;padding:0.8rem;background:rgba(200,169,110,0.1);border-radius:8px;font-size:0.85rem;color:var(--gray-light);">
           <i class="fa fa-map-pin" style="color:var(--gold);margin-right:0.4rem"></i>
           Tu ubicación: ${latitude.toFixed(5)}, ${longitude.toFixed(5)} —
-          <strong style="color:var(--gold)">GioBarber</strong> en Av. Providencia 1234
+          <strong style="color:var(--gold)">GioBarber</strong> en Malalco 1162, Peñaflor
         </div>
       `;
     },
@@ -451,11 +447,9 @@ function getLocation() {
         3: '❌ Tiempo de espera agotado.',
       };
       status.textContent = msgs[err.code] || '❌ Error desconocido.';
-
-      // Show barber location anyway
       mapDiv.innerHTML = `
         <iframe
-          src="https://www.google.com/maps?q=-33.4372,-70.6350&z=15&output=embed"
+          src="https://www.google.com/maps?q=-33.6147,-70.8997&z=15&output=embed"
           width="100%" height="400" style="border:0;border-radius:16px"
           allowfullscreen loading="lazy">
         </iframe>
