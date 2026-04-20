@@ -423,8 +423,8 @@ function getLocation() {
       const { latitude, longitude } = pos.coords;
       status.className = 'location-status success';
       status.textContent = `✅ Ubicación obtenida: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
-      const barbLat = -33.6147;
-      const barbLng = -70.8997;
+      const barbLat = -33.614694,
+      const barbLng = -70.899694;
       mapDiv.innerHTML = `
         <iframe
           src="https://www.google.com/maps?q=${barbLat},${barbLng}&z=15&output=embed"
