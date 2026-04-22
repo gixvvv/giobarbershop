@@ -379,24 +379,49 @@
 <div id="loginModal" class="modal-overlay" onclick="closeModalOutside(event,'loginModal')">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('loginModal')"><i class="fa fa-times"></i></button>
-    <div class="modal-icon"><i class="fa fa-user-circle"></i></div>
-    <h2>Iniciar Sesión</h2>
-    <form onsubmit="handleLogin(event)">
-      <div class="form-group">
-        <label>Correo electrónico</label>
-        <input type="email" id="loginEmail" placeholder="tu@correo.com" required/>
+
+    <!-- PASO 1: Selector de rol -->
+    <div id="loginStep1">
+      <div class="modal-icon"><i class="fa fa-scissors"></i></div>
+      <h2>¿Cómo ingresas?</h2>
+      <p style="color:var(--gray);text-align:center;margin-bottom:1.5rem;font-size:0.9rem;">Selecciona tu tipo de acceso</p>
+      <div class="role-selector">
+        <button class="role-btn" onclick="selectLoginRole('cliente')">
+          <i class="fa fa-user fa-2x"></i>
+          <span>Cliente</span>
+          <small>Reserva y gestiona tus citas</small>
+        </button>
+        <button class="role-btn role-btn-barber" onclick="selectLoginRole('barbero')">
+          <i class="fa fa-cut fa-2x"></i>
+          <span>Barbero</span>
+          <small>Acceso al panel de gestión</small>
+        </button>
       </div>
-      <div class="form-group">
-        <label>Contraseña</label>
-        <input type="password" id="loginPass" placeholder="••••••••" required/>
-      </div>
-      <div id="loginError" class="form-error" style="display:none;"></div>
-      <button type="submit" class="btn-gold full-width">Entrar <i class="fa fa-arrow-right"></i></button>
-    </form>
-    <p class="modal-switch">¿No tienes cuenta? <a onclick="switchModal('loginModal','registerModal')">Regístrate</a></p>
-    <p class="modal-switch" style="margin-top:0.4rem;font-size:0.78rem;opacity:0.6;">
-      ¿Problemas para entrar? <a onclick="resetSession()" style="cursor:pointer;">Limpiar sesión</a>
-    </p>
+    </div>
+
+    <!-- PASO 2: Formulario -->
+    <div id="loginStep2" style="display:none;">
+      <button class="btn-back" onclick="backToRoleSelect()"><i class="fa fa-arrow-left"></i> Volver</button>
+      <div class="modal-icon" id="loginRoleIcon"><i class="fa fa-user-circle"></i></div>
+      <h2 id="loginRoleTitle">Iniciar Sesión</h2>
+      <p id="loginRoleSubtitle" style="color:var(--gray);text-align:center;margin-bottom:1.2rem;font-size:0.85rem;"></p>
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label>Correo electrónico</label>
+          <input type="email" id="loginEmail" placeholder="tu@correo.com" required/>
+        </div>
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" id="loginPass" placeholder="••••••••" required/>
+        </div>
+        <div id="loginError" class="form-error" style="display:none;"></div>
+        <button type="submit" class="btn-gold full-width">Entrar <i class="fa fa-arrow-right"></i></button>
+      </form>
+      <p class="modal-switch" id="loginRegisterSwitch">¿No tienes cuenta? <a onclick="switchModal('loginModal','registerModal')">Regístrate</a></p>
+      <p class="modal-switch" style="margin-top:0.4rem;font-size:0.78rem;opacity:0.6;">
+        ¿Problemas para entrar? <a onclick="resetSession()" style="cursor:pointer;">Limpiar sesión</a>
+      </p>
+    </div>
   </div>
 </div>
 
@@ -446,4 +471,3 @@
 <script src="app.js"></script>
 </body>
 </html>
-
