@@ -123,10 +123,6 @@ document.querySelectorAll('.nav-links a').forEach(a => {
 });
 
 // ========== MODALS ==========
-function openModal(id) {
-  const m = document.getElementById(id);
-  if (m) { m.style.display = 'flex'; document.body.style.overflow = 'hidden'; }
-}
 function closeModal(id) {
   const m = document.getElementById(id);
   if (m) { m.style.display = 'none'; document.body.style.overflow = ''; }
@@ -137,6 +133,55 @@ function closeModalOutside(e, id) {
 function switchModal(closeId, openId) {
   closeModal(closeId);
   setTimeout(() => openModal(openId), 150);
+}
+
+// ========== ROLE LOGIN SELECTOR ==========
+let loginRoleSelected = null;
+
+function selectLoginRole(role) {
+  loginRoleSelected = role;
+  document.getElementById('loginStep1').style.display = 'none';
+  document.getElementById('loginStep2').style.display = 'block';
+
+  const icon = document.getElementById('loginRoleIcon');
+  const title = document.getElementById('loginRoleTitle');
+  const subtitle = document.getElementById('loginRoleSubtitle');
+  const registerSwitch = document.getElementById('loginRegisterSwitch');
+
+  if (role === 'barbero') {
+    icon.innerHTML = '<i class="fa fa-cut" style="color:#64b4ff"></i>';
+    title.textContent = 'Acceso Barbero';
+    subtitle.textContent = 'Ingresa con tus credenciales de barbero';
+    registerSwitch.style.display = 'none';
+  } else {
+    icon.innerHTML = '<i class="fa fa-user-circle"></i>';
+    title.textContent = 'Iniciar Sesión';
+    subtitle.textContent = 'Bienvenido de vuelta, cliente';
+    registerSwitch.style.display = 'block';
+  }
+
+  document.getElementById('loginEmail').value = '';
+  document.getElementById('loginPass').value = '';
+  document.getElementById('loginError').style.display = 'none';
+}
+
+function backToRoleSelect() {
+  loginRoleSelected = null;
+  document.getElementById('loginStep1').style.display = 'block';
+  document.getElementById('loginStep2').style.display = 'none';
+}
+
+function openModal(id) {
+  const m = document.getElementById(id);
+  if (m) { m.style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+  // Reset login modal to step 1 when opening
+  if (id === 'loginModal') {
+    const s1 = document.getElementById('loginStep1');
+    const s2 = document.getElementById('loginStep2');
+    if (s1) s1.style.display = 'block';
+    if (s2) s2.style.display = 'none';
+    loginRoleSelected = null;
+  }
 }
 
 // ========== AUTH: LOGIN ==========
@@ -156,11 +201,30 @@ function handleLogin(e) {
     return;
   }
 
+  // Validar que el rol seleccionado coincida
+  if (loginRoleSelected === 'barbero' && user.rol !== 'admin') {
+    err.textContent = '❌ No tienes acceso como barbero.';
+    err.style.display = 'block';
+    return;
+  }
+  if (loginRoleSelected === 'cliente' && user.rol === 'admin') {
+    err.textContent = '❌ Usa el acceso de Barbero para ingresar.';
+    err.style.display = 'block';
+    return;
+  }
+
   closeModal('loginModal');
   setSession(user);
-  showToast(`¡Bienvenido, ${user.nombre}! ✂️`, 'success');
+  const emoji = user.rol === 'admin' ? '💈' : '✂️';
+  const tipo = user.rol === 'admin' ? 'Barbero' : 'Cliente';
+  showToast(`¡Bienvenido, ${user.nombre}! ${emoji} (${tipo})`, 'success');
   document.getElementById('loginEmail').value = '';
   document.getElementById('loginPass').value = '';
+
+  // Si es admin/barbero, abrir panel automáticamente
+  if (user.rol === 'admin') {
+    setTimeout(() => openAdmin(), 400);
+  }
 }
 
 // ========== AUTH: REGISTER ==========
