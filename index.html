@@ -366,6 +366,7 @@
       <button class="admin-tab active" onclick="showAdminTab('citas')">Citas</button>
       <button class="admin-tab" onclick="showAdminTab('usuarios')">Usuarios</button>
       <button class="admin-tab" onclick="showAdminTab('resenas-admin')">Reseñas</button>
+      <button class="admin-tab" onclick="resetTotal()" style="margin-left:auto;background:rgba(220,50,50,0.15);color:#ff6b6b;border-color:rgba(220,50,50,0.3);" title="Borra todos los datos del navegador">⚠️ Reset</button>
     </div>
     <div id="adminCitas" class="admin-content active"></div>
     <div id="adminUsuarios" class="admin-content"></div>
@@ -393,6 +394,9 @@
       <button type="submit" class="btn-gold full-width">Entrar <i class="fa fa-arrow-right"></i></button>
     </form>
     <p class="modal-switch">¿No tienes cuenta? <a onclick="switchModal('loginModal','registerModal')">Regístrate</a></p>
+    <p class="modal-switch" style="margin-top:0.4rem;font-size:0.78rem;opacity:0.6;">
+      ¿Problemas para entrar? <a onclick="resetSession()" style="cursor:pointer;">Limpiar sesión</a>
+    </p>
   </div>
 </div>
 
@@ -442,3 +446,4 @@
 <script src="app.js"></script>
 </body>
 </html>
+
