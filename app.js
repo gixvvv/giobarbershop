@@ -18,20 +18,33 @@ const DB = {
 
 // ========== SEED ADMIN ==========
 (function seedAdmin() {
-  const users = DB.getArr('users');
-  const adminExists = users.find(u => u.email === 'admin@giobarber.cl');
-  if (!adminExists) {
-    DB.pushArr('users', {
-      id: 'admin',
-      nombre: 'Gio',
-      apellido: 'Barbero',
-      email: 'admin@giobarber.cl',
-      password: 'admin123',
-      telefono: '+56 9 1234 5678',
-      rol: 'admin',
-      createdAt: new Date().toISOString(),
-    });
+  const ADMIN_EMAIL = 'admin@giobarber.cl';
+  const ADMIN_PASS  = 'admin123';
+
+  let users = DB.getArr('users');
+
+  // Siempre asegurarse de que el admin exista y tenga la contraseña correcta
+  const adminIdx = users.findIndex(u => u.email === ADMIN_EMAIL);
+  const adminData = {
+    id: 'admin',
+    nombre: 'Gio',
+    apellido: 'Barbero',
+    email: ADMIN_EMAIL,
+    password: ADMIN_PASS,
+    telefono: '+56 9 1234 5678',
+    rol: 'admin',
+    createdAt: new Date().toISOString(),
+  };
+
+  if (adminIdx === -1) {
+    // No existe → lo creamos
+    users.push(adminData);
+  } else {
+    // Existe → actualizamos contraseña y rol por si acaso quedaron corruptos
+    users[adminIdx] = { ...users[adminIdx], ...adminData };
   }
+
+  DB.set('users', users);
 })();
 
 // ========== SEED REVIEWS ==========
@@ -407,6 +420,7 @@ function renderResenaStats() {
   `;
 }
 
+
 // ========== UBICACIÓN ==========
 function getLocation() {
   const status = document.getElementById('locationStatus');
@@ -423,8 +437,8 @@ function getLocation() {
       const { latitude, longitude } = pos.coords;
       status.className = 'location-status success';
       status.textContent = `✅ Ubicación obtenida: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
-      const barbLat = -33.6053,
-      const barbLng = -70.9008;
+      const barbLat = -33.8147,
+            barbLng = -70.7997;
       mapDiv.innerHTML = `
         <iframe
           src="https://www.google.com/maps?q=${barbLat},${barbLng}&z=15&output=embed"
@@ -449,7 +463,7 @@ function getLocation() {
       status.textContent = msgs[err.code] || '❌ Error desconocido.';
       mapDiv.innerHTML = `
         <iframe
-          src="https://www.google.com/maps?q=-33.6147,-70.8997&z=15&output=embed"
+          src="https://www.google.com/maps?q=-33.8147,-70.7997&z=15&output=embed"
           width="100%" height="400" style="border:0;border-radius:16px"
           allowfullscreen loading="lazy">
         </iframe>
@@ -458,6 +472,7 @@ function getLocation() {
     { timeout: 10000, enableHighAccuracy: true }
   );
 }
+
 
 // ========== ADMIN PANEL ==========
 function openAdmin() {
@@ -620,7 +635,23 @@ function adminDeleteResena(id) {
   showToast('Reseña eliminada.', 'info');
 }
 
-// ========== TOAST ==========
+// ========== RESET SESIÓN (emergencia) ==========
+function resetSession() {
+  if (!confirm('¿Limpiar sesión y recargar la página? Esto cierra tu sesión actual.')) return;
+  localStorage.removeItem('gb_session');
+  location.reload();
+}
+
+// ========== RESET TOTAL (solo para admin, emergencia) ==========
+function resetTotal() {
+  if (!confirm('⚠️ ¿Borrar TODOS los datos de GioBarber del navegador? Esta acción no se puede deshacer.')) return;
+  Object.keys(localStorage)
+    .filter(k => k.startsWith('gb_'))
+    .forEach(k => localStorage.removeItem(k));
+  location.reload();
+}
+
+
 function showToast(msg, type = 'info') {
   const t = document.getElementById('toast');
   t.textContent = msg;
